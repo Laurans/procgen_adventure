@@ -24,4 +24,10 @@ jobs:
       run: cd .container && docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/procgen_adventure
     - name: Pushing Docker container to Docker Hub
       run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin  && docker push ${{ secrets.DOCKER_USERNAME }}/procgen_adventure
-
+    - name: Post status to Discord
+      uses: sarisia/actions-status-discord@v1
+      if: always()
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK }}
+        status: ${{ job.status }}
+        job: Build docker image
