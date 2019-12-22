@@ -11,4 +11,6 @@ libbz2-dev
 libreadline-dev
 libsqlite3-dev
 libssl-dev
+libhdf5-dev
 zlib1g-dev
+llvm
