@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    paths: 
+      - "poetry.lock"
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.7'
+    - name: Install poetry
+      run: |
+        python -m pip install --upgrade pip
+        pip install poetry
+    - name: Export requirement
+      run: cd env && poetry export -f requirements.txt > requirements.txt && cd ..
+    - name: Build the Docker image
+      run: cd env && docker build . --file Dockerfile --tag procgen_adventure:$(date +%s)
