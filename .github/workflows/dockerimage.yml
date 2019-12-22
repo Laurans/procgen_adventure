@@ -22,6 +22,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
     - name: Export requirement
-      run: cd env && poetry export -f requirements.txt > requirements.txt && cd ..
+      run: cd .container && poetry export -f requirements.txt > requirements.txt && cd ..
     - name: Build the Docker image
-      run: cd env && docker build . --file Dockerfile --tag procgen_adventure:$(date +%s)
+      run: cd .container && docker build . --file Dockerfile --tag procgen_adventure:$(date +%s)
