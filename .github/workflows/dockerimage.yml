@@ -1,6 +1,9 @@
 name: Docker Image CI
 
-on: push
+on: 
+  push:
+    paths: 
+      - "poetry.lock"
 
 jobs:
 
