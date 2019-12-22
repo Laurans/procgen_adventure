@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@master
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
@@ -21,4 +21,8 @@ jobs:
     - name: Export requirement
       run: cd .container && poetry export -f requirements.txt > requirements.txt && cd ..
     - name: Build the Docker image
-      run: cd .container && docker build . --file Dockerfile --tag procgen_adventure:$(date +%s)
+      run: cd .container && docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/procgen_adventure
+
+    - name: Pushing Docker container to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }}${{}} - p ${{ secrets.DOCKER_PASSWORD }}${{ }} docker push ${{ secrets.DOCKER_USERNAME }}/procgen_adventure
+
