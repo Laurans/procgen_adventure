@@ -12,3 +12,4 @@ libssl-dev
 libreadline-dev
 libffi-dev
 curl
+git
