@@ -4,3 +4,11 @@ software-properties-common
 sudo
 locales
 xvfb
+zlib1g-dev
+libncurses5-dev
+libgdbm-dev
+libnss3-dev
+libssl-dev
+libreadline-dev
+libffi-dev
+curl

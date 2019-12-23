@@ -21,9 +21,8 @@ COPY ./* /tmp/
 RUN apt-get update && \
     apt-get --no-install-recommends install -y $(cat /tmp/base_dependencies.txt) && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
-    apt-get --no-install-recommends install -y python3.7 python3-pip && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    cd /usr/bin && ln -s $(which python3.7) python && python3.7 -m pip install pip
+    apt-get --no-install-recommends install -y python3.7 python3-pip python3-venv && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
@@ -36,6 +35,15 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
 
 USER $NB_UID
 WORKDIR $HOME
+
+ENV PYENV_ROOT=$HOME/.pyenv
+ENV PATH=$PATH:$PYENV_ROOT/bin
+
+RUN cd $HOME && curl https://pyenv.run | bash && \
+    echo "export PATH=\"${PYENV_ROOT}/bin:\$PATH\"" >> .bashrc && \
+    echo "eval \"\$(pyenv init -)\"" >> .bashrc && \
+    echo "eval \"\$(pyenv virtualenv-init -)\"" >> .bashrc && \
+    pyenv install 3.7.4 && pyenv global 3.7.4
 
 # Install dependences
 #RUN pip install --upgrade pip setuptools && pip install -r /tmp/requirements.txt
