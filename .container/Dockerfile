@@ -17,7 +17,7 @@ ADD fix-permissions /usr/local/bin/fix-permissions
 
 
 # Install base system libraries
-COPY base_dependencies.txt /tmp/base_dependencies.txt
+COPY ./* /tmp/
 RUN apt-get update && \
     apt-get --no-install-recommends install -y $(cat /tmp/base_dependencies.txt) && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
@@ -38,6 +38,5 @@ USER $NB_UID
 WORKDIR $HOME
 
 # Install dependences 
-COPY requirements.txt /tmp/requirements.txt
 #RUN pip install --upgrade pip setuptools && pip install -r /tmp/requirements.txt 
 WORKDIR ${HOME}/workdir
