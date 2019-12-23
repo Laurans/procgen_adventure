@@ -5,6 +5,7 @@ on:
     paths:
       - "poetry.lock"
       - ".container/**"
+      - ".github/workflows/dockerimage.yml"
 
 jobs:
 
