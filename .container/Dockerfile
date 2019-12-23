@@ -19,8 +19,11 @@ ADD fix-permissions /usr/local/bin/fix-permissions
 # Install base system libraries
 COPY base_dependencies.txt /tmp/base_dependencies.txt
 RUN apt-get update && \
-    apt-get install -y $(cat /tmp/base_dependencies.txt) && \
-    apt-get clean
+    apt-get --no-install-recommends install -y $(cat /tmp/base_dependencies.txt) && \
+    add-apt-repository ppa:deadsnakes/ppa -y && \
+    apt-get --no-install-recommends install -y python3.7 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    ln -s $(which python3.7) python
 
 
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
@@ -34,17 +37,7 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
 USER $NB_UID
 WORKDIR $HOME
 
-# Install pyenv
-ENV PYENV_ROOT=$HOME/.pyenv
-ENV PATH=$PATH:$PYENV_ROOT/bin
-
-RUN cd $HOME && curl https://pyenv.run | bash && \
-    echo "export PATH=\"${PYENV_ROOT}/bin:\$PATH\"" >> .bashrc && \
-    echo "eval \"\$(pyenv init -)\"" >> .bashrc && \
-    echo "eval \"\$(pyenv virtualenv-init -)\"" >> .bashrc && \
-    pyenv install 3.7.4 && pyenv global 3.7.4
-
-# Install Poetry
+# Install dependences 
 COPY requirements.txt /tmp/requirements.txt
-RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && pip install -r /tmp/requirements.txt 
+#RUN pip install --upgrade pip setuptools && pip install -r /tmp/requirements.txt 
 WORKDIR ${HOME}/workdir

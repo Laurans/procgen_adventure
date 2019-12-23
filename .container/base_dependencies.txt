@@ -1,8 +1,7 @@
 build-essential
 pkg-config
 make
-curl
-wget
+software-properties-common
 sudo
 locales
 git-core
