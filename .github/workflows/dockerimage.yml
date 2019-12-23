@@ -23,7 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
     - name: Export requirement
-      run: cd .container && poetry export -E -f requirements.txt > requirements.txt && cd ..
+      run: cd .container && poetry export -f requirements.txt > requirements.txt && cd ..
     - name: Build the Docker image
       run: cd .container && docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/procgen_adventure
     - name: Pushing Docker container to Docker Hub
