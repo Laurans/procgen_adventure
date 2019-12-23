@@ -21,9 +21,9 @@ COPY ./* /tmp/
 RUN apt-get update && \
     apt-get --no-install-recommends install -y $(cat /tmp/base_dependencies.txt) && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
-    apt-get --no-install-recommends install -y python3.7 && \
+    apt-get --no-install-recommends install -y python3.7 python3-pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    ln -s $(which python3.7) python
+    cd /usr/bin && ln -s $(which python3.7) python
 
 
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
@@ -39,4 +39,3 @@ WORKDIR $HOME
 
 # Install dependences 
 #RUN pip install --upgrade pip setuptools && pip install -r /tmp/requirements.txt 
-WORKDIR ${HOME}/workdir
