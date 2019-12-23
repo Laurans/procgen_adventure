@@ -1,14 +1,9 @@
 FROM nvidia/cuda:10.0-cudnn7-runtime
 
-ARG NB_USER=developer
-ARG NB_UID=1000
-ARG NB_GID=1000
-
-
 # Configure environment
-ENV NB_USER=$NB_USER \
-    NB_UID=$NB_UID \
-    NB_GID=$NB_GID \
+ENV NB_USER=developer \
+    NB_UID=1000 \
+    NB_GID=1000 \
     DEBIAN_FRONTEND=noninteractive
 
 ENV HOME=/home/$NB_USER
@@ -45,5 +40,5 @@ RUN cd $HOME && curl https://pyenv.run | bash && \
     echo "eval \"\$(pyenv virtualenv-init -)\"" >> .bashrc && \
     pyenv install 3.7.4 && pyenv global 3.7.4
 
-# Install dependences
-#RUN pip install --upgrade pip setuptools && pip install -r /tmp/requirements.txt
+# Install dependencies
+RUN pip install --upgrade pip setuptools && pip install --no-cache-dir -r /tmp/requirements.txt
