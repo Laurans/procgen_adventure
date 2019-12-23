@@ -9,9 +9,9 @@ ARG NB_GID=1000
 ENV NB_USER=$NB_USER \
     NB_UID=$NB_UID \
     NB_GID=$NB_GID \
-    DEBIAN_FRONTEND=noninteractive 
+    DEBIAN_FRONTEND=noninteractive
 
-ENV HOME=/home/$NB_USER 
+ENV HOME=/home/$NB_USER
 
 ADD fix-permissions /usr/local/bin/fix-permissions
 
@@ -23,7 +23,7 @@ RUN apt-get update && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
     apt-get --no-install-recommends install -y python3.7 python3-pip && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    cd /usr/bin && ln -s $(which python3.7) python
+    cd /usr/bin && ln -s $(which python3.7) python && python3.7 -m pip install pip
 
 
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
@@ -32,10 +32,10 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
     chmod g+w /etc/passwd && \
     chmod +x /usr/local/bin/fix-permissions && \
-    fix-permissions $HOME 
+    fix-permissions $HOME
 
 USER $NB_UID
 WORKDIR $HOME
 
-# Install dependences 
-#RUN pip install --upgrade pip setuptools && pip install -r /tmp/requirements.txt 
+# Install dependences
+#RUN pip install --upgrade pip setuptools && pip install -r /tmp/requirements.txt
