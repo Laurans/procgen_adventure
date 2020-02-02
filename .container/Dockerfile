@@ -41,5 +41,6 @@ RUN cd $HOME && curl https://pyenv.run | bash && \
     pyenv install 3.7.6 && pyenv global 3.7.6
 
 # Install dependencies
-RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && pip install --no-cache-dir -r /tmp/requirements.txt
-RUN pip install https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-0.9.0.dev0-cp37-cp37m-manylinux1_x86_64.whl
+RUN eval "$(pyenv init -)"
+RUN pip install --upgrade pip setuptools && pip install --no-cache-dir -r /tmp/requirements.txt
+RUN pip install --no-cache-dir https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-0.9.0.dev0-cp37-cp37m-manylinux1_x86_64.whl
