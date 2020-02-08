@@ -233,13 +233,12 @@ description = "The OpenAI Gym: A toolkit for developing and comparing your reinf
 name = "gym"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-version = "0.15.4"
+version = "0.15.6"
 
 [package.dependencies]
 cloudpickle = ">=1.2.0,<1.3.0"
 numpy = ">=1.10.4"
-opencv-python = "*"
-pyglet = ">=1.2.0,<=1.3.2"
+pyglet = ">=1.4.0,<=1.5.0"
 scipy = "*"
 six = "*"
 
@@ -428,17 +427,6 @@ version = "1.18.1"
 [[package]]
 category = "main"
 description = "Wrapper package for OpenCV python bindings."
-name = "opencv-python"
-optional = false
-python-versions = "*"
-version = "4.1.2.30"
-
-[package.dependencies]
-numpy = ">=1.11.1"
-
-[[package]]
-category = "main"
-description = "Wrapper package for OpenCV python bindings."
 name = "opencv-python-headless"
 optional = false
 python-versions = "*"
@@ -551,7 +539,7 @@ description = "Procedurally Generated Game-Like RL Environments"
 name = "procgen"
 optional = false
 python-versions = ">=3.6.0"
-version = "0.9.2"
+version = "0.9.4"
 
 [package.dependencies]
 cffi = ">=1.12,<2.0"
@@ -560,7 +548,7 @@ gym = ">=0.15,<1.0"
 imageio = ">=2.6,<3.0"
 imageio-ffmpeg = ">=0.3,<1.0"
 numpy = ">=1.17,<2.0"
-pyglet = "1.3.2"
+pyglet = ">=1.4.8,<1.5.0"
 
 [package.extras]
 test = ["pytest (5.2.1)", "pytest-benchmark (3.2.2)"]
@@ -634,7 +622,7 @@ description = "Cross-platform windowing and multimedia library"
 name = "pyglet"
 optional = false
 python-versions = "*"
-version = "1.3.2"
+version = "1.4.10"
 
 [package.dependencies]
 future = "*"
@@ -980,7 +968,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools"]
 
 [metadata]
-content-hash = "d11fa7a48c44f901b30985c2954f2e30fac1e9e0a14dd32a238b12e0a7bbb631"
+content-hash = "6e70841fef57bd76fe6611bc6ab21667d3f6d1c1b9ca8c94eabbdf861b28447c"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1182,7 +1170,7 @@ grpcio = [
     {file = "grpcio-1.26.0.tar.gz", hash = "sha256:5ef42dfc18f9a63a06aca938770b69470bb322e4c137cf08cf21703d1ef4ae5c"},
 ]
 gym = [
-    {file = "gym-0.15.4.tar.gz", hash = "sha256:3b930cbe1c76bbd30455b5e82ba723dea94159a5f988e927f443324bf7cc7ddd"},
+    {file = "gym-0.15.6.tar.gz", hash = "sha256:ed7ddc4d3a07da80f7865b0fa2a0659d2d898588269329994d4b0b320d27fd62"},
 ]
 identify = [
     {file = "identify-1.4.11-py2.py3-none-any.whl", hash = "sha256:1222b648251bdcb8deb240b294f450fbf704c7984e08baa92507e4ea10b436d5"},
@@ -1319,34 +1307,6 @@ numpy = [
     {file = "numpy-1.18.1-cp38-cp38-win_amd64.whl", hash = "sha256:39d2c685af15d3ce682c99ce5925cc66efc824652e10990d2462dfe9b8918c6a"},
     {file = "numpy-1.18.1.zip", hash = "sha256:b6ff59cee96b454516e47e7721098e6ceebef435e3e21ac2d6c3b8b02628eb77"},
 ]
-opencv-python = [
-    {file = "opencv_python-4.1.2.30-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:1a2d1801c038f055852bd2379186ca8b19b4ea24afb0b8410293bc802211579b"},
-    {file = "opencv_python-4.1.2.30-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:e793df2e12093b3a01006b5b27f321e306193c7a5c9e2a6c8bf652e1ad2d6a86"},
-    {file = "opencv_python-4.1.2.30-cp27-cp27m-manylinux1_x86_64.whl", hash = "sha256:ce7b1f25be04b04f2e678b2bf23a975137f77406dcee66a88a2daeb77cda3e76"},
-    {file = "opencv_python-4.1.2.30-cp27-cp27m-win32.whl", hash = "sha256:6c32d36f52a6e0c02d1ab0bb95223cb4dd5525a7e8292a747116126b3d34c578"},
-    {file = "opencv_python-4.1.2.30-cp27-cp27m-win_amd64.whl", hash = "sha256:22c2ee5f97f85903bfb28c056566b2ecaa1d2f804b880ab39ebf94528a402992"},
-    {file = "opencv_python-4.1.2.30-cp27-cp27mu-manylinux1_i686.whl", hash = "sha256:04bec0a6d3a00360a7fb769b755ff4489a4ac8291821b785151f63e6d8bb59ea"},
-    {file = "opencv_python-4.1.2.30-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:25127990671dc8bd27ae8b880d7a39f9aae863052a8fbebe8977c6ce8e5fc0c9"},
-    {file = "opencv_python-4.1.2.30-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:73a467a78ffd902d2c0265ab6b2e2cdda423d61b3d08685e0c7d0b4572142ff1"},
-    {file = "opencv_python-4.1.2.30-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:76de8a247970d150b1672c6646cda91217d562682e713721fc9b9bf1434553c4"},
-    {file = "opencv_python-4.1.2.30-cp35-cp35m-win32.whl", hash = "sha256:e6fc00ac42c800fad5fb3927cfb9bf4e60bb3302cb9805f45b826d5d2546119a"},
-    {file = "opencv_python-4.1.2.30-cp35-cp35m-win_amd64.whl", hash = "sha256:3cef82b6a1f748d2f4527f5932a86d54ebd10bd89f6cf59b003c36b1015055f7"},
-    {file = "opencv_python-4.1.2.30-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:5f2cf5a0ab244a0a1dbe5ec426c277b55e06ac6a472ad61be77ef643a238cbd3"},
-    {file = "opencv_python-4.1.2.30-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:982d4e80c14356098cde57a6c7d18fe0928a1c3118675bac2252ef38f152e1ab"},
-    {file = "opencv_python-4.1.2.30-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:919d5c3ec1a62258ba8c68b869b1056186e2355c4474739b199c295547e66cc1"},
-    {file = "opencv_python-4.1.2.30-cp36-cp36m-win32.whl", hash = "sha256:499a0413e7110a934ab56e635252a4c86f8be64de59f94a62318a7b895dc809e"},
-    {file = "opencv_python-4.1.2.30-cp36-cp36m-win_amd64.whl", hash = "sha256:1c7d235faef511aca7669f1aa650897b6c058dfde6412ea3fc58feb0fce78814"},
-    {file = "opencv_python-4.1.2.30-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:c8119248457e909dcd7b598621ed1d139419d69377e8cb4e2b2c49c819de287d"},
-    {file = "opencv_python-4.1.2.30-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:9d025e6bf2989bcbc7744c26d8bd90c2629a92d8de3ba2416f62ce2a94615dd9"},
-    {file = "opencv_python-4.1.2.30-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:eae543b3e9253ff702103333aabd87736b5ed5e46ab834d8e0b929f08f494dee"},
-    {file = "opencv_python-4.1.2.30-cp37-cp37m-win32.whl", hash = "sha256:e2ffa3161b8662112f1880734e8b9549d0c9e818e59f652a9d1c5bf31e36586a"},
-    {file = "opencv_python-4.1.2.30-cp37-cp37m-win_amd64.whl", hash = "sha256:6183c9c7fab4590e0651bc941cde780988c3ad9889bd62de19d581a6f59523ea"},
-    {file = "opencv_python-4.1.2.30-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:bb59f98205cd81e29f45eed043cf0f98531486dc0b3f671c9e06fecf08f7ccef"},
-    {file = "opencv_python-4.1.2.30-cp38-cp38-manylinux1_i686.whl", hash = "sha256:d64428bf59ab4d27620b00a2ad6fea2b4d62016a17849c82a7517ec12db97d55"},
-    {file = "opencv_python-4.1.2.30-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:5fec35916a6b9ce935f2e2806084303fd4e3fbb0c973a8db8f54b5aca54613cb"},
-    {file = "opencv_python-4.1.2.30-cp38-cp38-win32.whl", hash = "sha256:67a236db8db84d7fb0f6e127f360ce6669350ef324839132e22879ec90588dab"},
-    {file = "opencv_python-4.1.2.30-cp38-cp38-win_amd64.whl", hash = "sha256:f0af656402b73ead2d9f593c2774c04b01e2d0c63e4f99e0dc2f3fde99be22b4"},
-]
 opencv-python-headless = [
     {file = "opencv_python_headless-4.1.2.30-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:aabd356b12771337a6cad16ed4596576b6554f48478b77addc0fec1e5c190b55"},
     {file = "opencv_python_headless-4.1.2.30-cp27-cp27m-manylinux1_i686.whl", hash = "sha256:badd2ce35f6a7e647dfd3236beda4a5b1418dacb77bf6833f4aed30127275074"},
@@ -1436,15 +1396,15 @@ pre-commit = [
     {file = "pre_commit-2.0.1.tar.gz", hash = "sha256:bf80d9dd58bea4f45d5d71845456fdcb78c1027eda9ed562db6fa2bd7a680c3a"},
 ]
 procgen = [
-    {file = "procgen-0.9.2-cp36-cp36m-macosx_10_6_intel.whl", hash = "sha256:b19946e3069880a3a9bc63d20c20a1b36502e3b1b82bcc7b33e574163de4ec38"},
-    {file = "procgen-0.9.2-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:7add468deac80121a84975cddb3ebb09f75f087d1cf53adf96203ec77116aec8"},
-    {file = "procgen-0.9.2-cp36-cp36m-win_amd64.whl", hash = "sha256:71862ec4cc83a19dab5ad6c407d41fb8101f9263f8735bfd3e05b2d21f9f5369"},
-    {file = "procgen-0.9.2-cp37-cp37m-macosx_10_6_intel.whl", hash = "sha256:d5a754dc8f9c1a5fb2248a354172702af8fb2e80f54cf62f3ac2d2479578d3f6"},
-    {file = "procgen-0.9.2-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:02f78cdf701ca1abdedf3ce3065f4daee5e0be46b6ff22ca8097829a852d42d5"},
-    {file = "procgen-0.9.2-cp37-cp37m-win_amd64.whl", hash = "sha256:95c2e1517523c45bb698b8ef921e43ef4243116621b30dde7afdc0dee4072da2"},
-    {file = "procgen-0.9.2-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:2b97d2a9c804ffb891f89a93415763d1f6b87dc189edc31f30ef1a6823322147"},
-    {file = "procgen-0.9.2-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:d505854c0d3cd8516df08a368d66ad940cc02d20c5e4842bebc28d6f48fcc905"},
-    {file = "procgen-0.9.2-cp38-cp38-win_amd64.whl", hash = "sha256:b12c3f3c4003042e777f5eb317299f35e1a8960739c7ad3f5773328c4f7fed34"},
+    {file = "procgen-0.9.4-cp36-cp36m-macosx_10_6_intel.whl", hash = "sha256:42674d0ed05ed64c067994b044819745d994c633149d665598fc9da8e87e381d"},
+    {file = "procgen-0.9.4-cp36-cp36m-manylinux2010_x86_64.whl", hash = "sha256:4e9d34914813ed1ebe5db32982653570accbc79955550c98a725b1e82eadecaa"},
+    {file = "procgen-0.9.4-cp36-cp36m-win_amd64.whl", hash = "sha256:e6d0c65b638819587d11d199f208eeca8fefa2867689e567114b5288ec869462"},
+    {file = "procgen-0.9.4-cp37-cp37m-macosx_10_6_intel.whl", hash = "sha256:0dc4ad41a065fb2542e481bf9d6da2ad9213742f8872eaf1bf4a2ebe9a200cfb"},
+    {file = "procgen-0.9.4-cp37-cp37m-manylinux2010_x86_64.whl", hash = "sha256:d02f71ce3835b14980ce21d83938c42ba5f7415d4e7e7a6518ec653b963e4471"},
+    {file = "procgen-0.9.4-cp37-cp37m-win_amd64.whl", hash = "sha256:a22becf4d2b6185a44aa58ef86c8b4d988804d16c943a0a2adbfd9227e222b0e"},
+    {file = "procgen-0.9.4-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:315da16966afe0acfaaadc27309df0f3583e41a38fda6d836317bc5b124593b8"},
+    {file = "procgen-0.9.4-cp38-cp38-manylinux2010_x86_64.whl", hash = "sha256:52141423c3a13fbc6e718766ed5d9eb8efa79c810cc16bc939352871ce24eac2"},
+    {file = "procgen-0.9.4-cp38-cp38-win_amd64.whl", hash = "sha256:9f5f6ffdfc7a6e0a42b8456a2c19bc4c088786164d91a736d9c2d778a2485fac"},
 ]
 protobuf = [
     {file = "protobuf-3.11.2-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:3f509f7e50d806a434fe4a5fbf602516002a0f092889209fff7db82060efffc0"},
@@ -1502,8 +1462,8 @@ pyflakes = [
     {file = "pyflakes-2.1.1.tar.gz", hash = "sha256:d976835886f8c5b31d47970ed689944a0262b5f3afa00a5a7b4dc81e5449f8a2"},
 ]
 pyglet = [
-    {file = "pyglet-1.3.2-py2.py3-none-any.whl", hash = "sha256:8b07aea16f34ac861cffd06a0c17723ca944d172e577b57b21859b7990709a66"},
-    {file = "pyglet-1.3.2.tar.gz", hash = "sha256:b00570e7cdf6971af8953b6ece50d83d13272afa5d1f1197c58c0f478dd17743"},
+    {file = "pyglet-1.4.10-py2.py3-none-any.whl", hash = "sha256:9ae8ef328382ee4705ac52a000e37f7cb3209220a33ef779e3b18a9d23baef9b"},
+    {file = "pyglet-1.4.10.zip", hash = "sha256:c57e3e18246f45e4d6bb3d29e39d128d6e72b05f4212b10353adc3ba260ceb65"},
 ]
 pygments = [
     {file = "Pygments-2.5.2-py2.py3-none-any.whl", hash = "sha256:2a3fe295e54a20164a9df49c75fa58526d3be48e14aceba6d6b1e8ac0bfd6f1b"},

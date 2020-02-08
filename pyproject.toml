@@ -6,7 +6,7 @@ authors = ["Anaelle Laurans <16943368+Laurans@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-procgen = "0.9.2"
+procgen = "^0.9.2"
 torch = "^1.4.0"
 pandas = "^1.0.0"
 requests = "^2.22.0"
