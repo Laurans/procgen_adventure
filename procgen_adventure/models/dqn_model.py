@@ -1,7 +1,18 @@
+import numpy as np
 import torch
+import torch.nn as nn
 from rlpyt.models.conv2d import Conv2dModel
 from rlpyt.models.dqn.dueling import DuelingHeadModel
 from rlpyt.utils.tensor import infer_leading_dims, restore_leading_dims
+
+
+@torch.no_grad()
+def layer_init(layer, w_scale=np.sqrt(2)):
+    if isinstance(layer, nn.Conv2d) or isinstance(layer, nn.Linear):
+        nn.init.orthogonal_(layer.weight.data)
+        layer.weight.data.mul_(w_scale)
+        if layer.bias is not None:
+            nn.init.constant_(layer.bias.data, 0)
 
 
 class DqnModel(torch.nn.Module):
@@ -20,6 +31,8 @@ class DqnModel(torch.nn.Module):
 
         conv_out_size = self.conv.conv_out_size(h, w)
         self.head = DuelingHeadModel(conv_out_size, fc_sizes, output_size)
+
+        self.apply(layer_init)
 
     def forward(self, observation, prev_action, prev_reward):
         img = observation.type(torch.float)  # Expect torch.uint8 inputs
