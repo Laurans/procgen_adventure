@@ -38,7 +38,9 @@ RUN cd $HOME && curl https://pyenv.run | bash && \
     echo "export PATH=\"${PYENV_ROOT}/bin:\$PATH\"" >> .bashrc && \
     echo "eval \"\$(pyenv init -)\"" >> .bashrc && \
     echo "eval \"\$(pyenv virtualenv-init -)\"" >> .bashrc && \
-    pyenv install 3.7.6 && pyenv global 3.7.6
+    pyenv install 3.7.6 && pyenv global 3.7.6 && \
+    mkdir external_wheels
 
+COPY /tmp/external_wheels/* external_wheels/
 # Install dependencies
 RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && pip install --no-cache-dir -r /tmp/requirements.txt
