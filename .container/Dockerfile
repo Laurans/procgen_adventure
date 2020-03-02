@@ -42,4 +42,3 @@ RUN cd $HOME && curl https://pyenv.run | bash && \
 
 # Install dependencies
 RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && pip install --no-cache-dir -r /tmp/requirements.txt
-RUN eval "$(pyenv init -)" && pip install --no-cache-dir https://s3-us-west-2.amazonaws.com/ray-wheels/latest/ray-0.9.0.dev0-cp37-cp37m-manylinux1_x86_64.whl
