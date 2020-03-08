@@ -12,8 +12,8 @@ ADD fix-permissions /usr/local/bin/fix-permissions
 
 
 # Install base system libraries
-COPY ./* /tmp/
-RUN ls /tmp/external_wheels
+COPY ./ /tmp/
+RUN ls -la /tmp/external_wheels
 RUN apt-get update && \
     apt-get --no-install-recommends install -y $(cat /tmp/base_dependencies.txt) && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
