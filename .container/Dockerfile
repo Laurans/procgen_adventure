@@ -38,8 +38,7 @@ RUN cd $HOME && curl https://pyenv.run | bash && \
     echo "export PATH=\"${PYENV_ROOT}/bin:\$PATH\"" >> .bashrc && \
     echo "eval \"\$(pyenv init -)\"" >> .bashrc && \
     echo "eval \"\$(pyenv virtualenv-init -)\"" >> .bashrc && \
-    pyenv install 3.7.6 && pyenv global 3.7.6 && \
-    mkdir external_wheels && cp /tmp/external_wheels/* external_wheels/
+    pyenv install 3.7.6 && pyenv global 3.7.6
 
 # Install dependencies
-RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && pip install --no-cache-dir -r /tmp/requirements.txt
+RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
