@@ -13,6 +13,7 @@ ADD fix-permissions /usr/local/bin/fix-permissions
 
 # Install base system libraries
 COPY ./* /tmp/
+RUN ls /tmp/external_wheels
 RUN apt-get update && \
     apt-get --no-install-recommends install -y $(cat /tmp/base_dependencies.txt) && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
@@ -39,8 +40,7 @@ RUN cd $HOME && curl https://pyenv.run | bash && \
     echo "eval \"\$(pyenv init -)\"" >> .bashrc && \
     echo "eval \"\$(pyenv virtualenv-init -)\"" >> .bashrc && \
     pyenv install 3.7.6 && pyenv global 3.7.6 && \
-    mkdir external_wheels
+    mkdir external_wheels && cp /tmp/external_wheels/* external_wheels/
 
-COPY /tmp/external_wheels/* external_wheels/
 # Install dependencies
 RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && pip install --no-cache-dir -r /tmp/requirements.txt
