@@ -42,4 +42,4 @@ RUN cd $HOME && curl https://pyenv.run | bash && \
 
 # Install dependencies
 RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python && \
-    echo "export PATH=\"\$HOME/.poetry/bin:\$PATH\"" >> .bashrc
+    echo "export PATH=\"${HOME}/.poetry/bin:\$PATH\"" >> .bashrc && source $HOME/.poetry/env && poetry config virtualenvs.create false
