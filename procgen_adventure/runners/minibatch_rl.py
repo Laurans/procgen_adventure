@@ -123,6 +123,7 @@ class MinibatchRlBase(BaseRunner):
 
     def initialize_logging(self):
         self._opt_infos = {k: list() for k in self.algo.opt_info_fields}
+        self._opt_infos["TrainingRewards"] = list()
         self._start_time = self._last_time = time.time()
         self._cum_time = 0.0
         self._cum_completed_trajs = 0
@@ -311,6 +312,9 @@ class MinibatchRlEval(MinibatchRlBase):
             with logger.prefix(f"itr #{itr} "):
                 self.agent.sample_mode(itr)
                 samples, traj_infos = self.sampler.obtain_samples(itr)
+                self._opt_infos["TrainingRewards"] += (
+                    samples.env.reward.cpu().numpy().flatten().tolist()
+                )
                 self.agent.train_mode(itr)
                 opt_info = self.algo.optimize_agent(itr, samples)
                 self.store_diagnostics(itr, traj_infos, opt_info)

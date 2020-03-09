@@ -4,6 +4,7 @@ from procgen_adventure.runners.minibatch_rl import MinibatchRlEval
 from procgen_adventure.utils.context import logger_context
 from procgen_adventure.wrappers import make as gym_make
 from rlpyt.algos.dqn.dqn import DQN
+from rlpyt.samplers.parallel.cpu.sampler import CpuSampler
 from rlpyt.samplers.serial.sampler import SerialSampler
 
 
@@ -11,6 +12,8 @@ def build_and_train(game="procgen:procgen-coinrun-v0"):
     run_ID = 0
     cuda_idx = 0
     n_parallel = 4
+    sample_mode = "serial"
+
     config = dict(
         env=dict(
             id=game,
@@ -33,7 +36,13 @@ def build_and_train(game="procgen:procgen-coinrun-v0"):
         ),
         affinity=dict(cuda_idx=cuda_idx, workers_cpus=list(range(n_parallel))),
     )
-    sampler = SerialSampler(
+
+    if sample_mode == "serial":
+        Sampler = SerialSampler  # (Ignores workers_cpus.)
+    elif sample_mode == "cpu":
+        Sampler = CpuSampler
+
+    sampler = Sampler(
         EnvCls=gym_make,
         env_kwargs=config["env"],
         eval_env_kwargs=dict(id=game),
