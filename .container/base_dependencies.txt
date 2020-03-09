@@ -14,3 +14,4 @@ libffi-dev
 curl
 git
 libhdf5-serial-dev
+libxrender1
