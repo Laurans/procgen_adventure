@@ -39,8 +39,8 @@ def build_and_train(game="procgen:procgen-coinrun-v0"):
         eval_env_kwargs=dict(id=game),
         max_decorrelation_steps=0,
         eval_n_envs=10,
-        eval_max_steps=int(10e3),
-        eval_max_trajectories=5,
+        eval_max_steps=int(2000 * 10),
+        eval_max_trajectories=None,
         **config["sampler"]
     )
     algo = DQN(**config["algo"])  # Run with defaults.
