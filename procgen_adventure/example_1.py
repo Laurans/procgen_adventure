@@ -30,6 +30,34 @@ def build_and_train(game="pong", run_ID=0, cuda_idx=None):
         batch_B=1,
         max_decorrelation_steps=0,
         eval_n_envs=10,
+        eval_max_steps=int(10e3),
+        eval_max_trajectories=5,
+    )
+    algo = DQN(min_steps_learn=1e3)  # Run with defaults.
+    agent = AtariDqnAgent()
+    runner = MinibatchRlEval(
+        algo=algo,
+        agent=agent,
+        sampler=sampler,
+        n_steps=50e6,
+        log_interval_steps=1e3,
+        affinity=dict(cuda_idx=cuda_idx),
+    )
+    name = "dqn_" + game
+    with logger_context(run_ID, name, snapshot_mode="last"):
+        runner.train()
+
+
+def build_and_train_custom(game="pong", run_ID=0, cuda_idx=None):
+    sampler = SerialSampler(
+        EnvCls=AtariEnv,
+        TrajInfoCls=AtariTrajInfo,  # default traj info + GameScore
+        env_kwargs=dict(game=game),
+        eval_env_kwargs=dict(game=game),
+        batch_T=4,  # Four time-steps per sampler iteration.
+        batch_B=1,
+        max_decorrelation_steps=0,
+        eval_n_envs=10,
         eval_max_steps=int(2700 * 10),
         eval_max_trajectories=None,
     )
