@@ -41,4 +41,5 @@ RUN cd $HOME && curl https://pyenv.run | bash && \
     pyenv install 3.7.6 && pyenv global 3.7.6
 
 # Install dependencies
-RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+RUN eval "$(pyenv init -)" && pip install --upgrade pip setuptools && curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python && \
+    echo "export PATH=\"\$HOME/.poetry/bin:\$PATH\"" >> .bashrc
