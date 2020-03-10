@@ -28,11 +28,12 @@ def build_and_train(game="procgen:procgen-coinrun-v0"):
             replay_size=int(1e5),
             target_update_interval=int(8e3),
             n_step_return=3,
-            learning_rate=0.0025,
+            learning_rate=0.0000625,
             eps_steps=int(25e4),
             optim_kwargs=dict(eps=0.00015, weight_decay=0.0),
             double_dqn=True,
             prioritized_replay=True,
+            replay_ratio=4,
         ),
         affinity=dict(cuda_idx=cuda_idx, workers_cpus=list(range(n_parallel))),
     )
