@@ -1,6 +1,6 @@
 import gym
 import numpy as np
-from gym import ObservationWrapper, RewardWrapper, Wrapper
+from gym import ObservationWrapper, RewardWrapper, Wrapper, ActionWrapper
 from gym.spaces import Box
 from rlpyt.envs.gym import GymEnvWrapper
 
@@ -10,6 +10,7 @@ def _make(**env_config):
     env = PermuteShapeObservation(env)
     env = TimeLimit(env, 100)
     # env = ReshapeReward(env)
+    env = ReshapeAction(env)
     return env
 
 
@@ -67,7 +68,6 @@ class TimeLimit(gym.Wrapper):
         if self._elapsed_steps >= self._max_episode_steps:
             info["TimeLimit.truncated"] = not done
             done = True
-            reward = -1
         return observation, reward, done, info
 
     def reset(self, **kwargs):
@@ -81,3 +81,21 @@ class ReshapeReward(RewardWrapper):
             return reward
         else:
             return reward - 0.1
+
+
+class ReshapeAction(ActionWrapper):
+    def __init__(self, env):
+        super(ReshapeAction, self).__init__(env)
+        self.mapping_action = {
+            "NOOP": 4,
+            "RIGHT": 7,
+            "LEFT": 1,
+            "JUMP": 5,
+            "RIGHT-JUMP": 8,
+            "LEFT-JUMP": 2,
+            "DOWN": 3,
+        }
+        self.action_space = gym.spaces.Discrete(len(self.mapping_action.keys()))
+
+    def action(self, action):
+        return self.mapping_action[list(self.mapping_action)[action]]
