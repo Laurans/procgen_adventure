@@ -9,7 +9,7 @@ def _make(**env_config):
     env = gym.make(**env_config)
     env = PermuteShapeObservation(env)
     env = TimeLimit(env, 1000)
-    env = RewardWrapper(env)
+    env = ReshapeReward(env)
     return env
 
 
