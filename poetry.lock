@@ -7,18 +7,6 @@ python-versions = "*"
 version = "1.4.3"
 
 [[package]]
-category = "main"
-description = "Python bindings to Atari games"
-name = "atari-py"
-optional = false
-python-versions = "*"
-version = "0.2.6"
-
-[package.dependencies]
-numpy = "*"
-six = "*"
-
-[[package]]
 category = "dev"
 description = "Atomic file writes."
 marker = "sys_platform == \"win32\""
@@ -681,14 +669,6 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "2.4.6"
 
 [[package]]
-category = "main"
-description = "Python Progress Bar and Percent Indicator Utility"
-name = "pyprind"
-optional = false
-python-versions = "*"
-version = "2.11.2"
-
-[[package]]
 category = "dev"
 description = "A python implmementation of GNU readline."
 marker = "platform_system == \"Windows\""
@@ -790,27 +770,6 @@ urllib3 = ">=1.21.1,<1.25.0 || >1.25.0,<1.25.1 || >1.25.1,<1.26"
 [package.extras]
 security = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)"]
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7)", "win-inet-pton"]
-
-[[package]]
-category = "main"
-description = ""
-name = "rlpyt"
-optional = false
-python-versions = ">=3.7,<4.0"
-version = "0.1.1"
-
-[package.dependencies]
-atari-py = ">=0.2.6,<0.3.0"
-numpy = ">=1.18.1,<2.0.0"
-opencv-python = ">=4.2.0,<5.0.0"
-psutil = ">=5.7.0,<6.0.0"
-pyprind = ">=2.11.2,<3.0.0"
-torch = ">=1.4.0,<2.0.0"
-
-[package.source]
-reference = ""
-type = "file"
-url = "external_wheels/rlpyt-0.1.1-py3-none-any.whl"
 
 [[package]]
 category = "main"
@@ -1020,24 +979,13 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "47d884b092b88f979c8e82416a0f5780d05a3088732cdb07571681a766009938"
+content-hash = "4b08d8ed2134c0ecaaaff6604d237f1a78e1eba28063c97d6c4f30cddd112b0d"
 python-versions = "^3.7"
 
 [metadata.files]
 appdirs = [
     {file = "appdirs-1.4.3-py2.py3-none-any.whl", hash = "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"},
     {file = "appdirs-1.4.3.tar.gz", hash = "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92"},
-]
-atari-py = [
-    {file = "atari-py-0.2.6.tar.gz", hash = "sha256:6249ad5079b0489e87eb44e65485bb1b07cc1b5af729f1ee52ece749503ceb1d"},
-    {file = "atari_py-0.2.6-cp35-cp35m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:3cd3f506a4cac680908501def3d3b79ab2b705993d7cbaead35468b26f2c585b"},
-    {file = "atari_py-0.2.6-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:5a621d623e1619fe2d8607ed4ceaf0bafbae54fea42c3bf3e1522410893ef933"},
-    {file = "atari_py-0.2.6-cp36-cp36m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:ae2f07e0a5de22d465fef8313b3ecfa1fec7f36e17b5204819e855413e6214de"},
-    {file = "atari_py-0.2.6-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:f6c3ae01f7a2bb331236383fbd47046a40a9fa3bf48e31dc96bbc75c107749b7"},
-    {file = "atari_py-0.2.6-cp36-cp36m-win_amd64.whl", hash = "sha256:64059ae02ac9d90cc43654c748c30d2ef69dd57b0d9e4b59039a420d688814a2"},
-    {file = "atari_py-0.2.6-cp37-cp37m-macosx_10_6_intel.macosx_10_9_intel.macosx_10_9_x86_64.macosx_10_10_intel.macosx_10_10_x86_64.whl", hash = "sha256:b04033186cd9c7764108627ecd38a5c9be14546b46875b90c6bb5d66451d28c1"},
-    {file = "atari_py-0.2.6-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:d9e2c25d39783867c2f29d1dd9d3a659fc56036456d07dc9efe8bd7bb31a07d7"},
-    {file = "atari_py-0.2.6-cp37-cp37m-win_amd64.whl", hash = "sha256:ac3315c7a1d6cfb09f043e7971598cb53a749393b150614986a0eab28b049aea"},
 ]
 atomicwrites = [
     {file = "atomicwrites-1.3.0-py2.py3-none-any.whl", hash = "sha256:03472c30eb2c5d1ba9227e4c2ca66ab8287fbfbbda3888aa93dc2e28fc6811b4"},
@@ -1488,10 +1436,6 @@ pyparsing = [
     {file = "pyparsing-2.4.6-py2.py3-none-any.whl", hash = "sha256:c342dccb5250c08d45fd6f8b4a559613ca603b57498511740e65cd11a2e7dcec"},
     {file = "pyparsing-2.4.6.tar.gz", hash = "sha256:4c830582a84fb022400b85429791bc551f1f4871c33f23e44f353119e92f969f"},
 ]
-pyprind = [
-    {file = "PyPrind-2.11.2-py3-none-any.whl", hash = "sha256:20b64d7a6ff3039e1563e41b0658fd57a4499328419f6178899c83396c985c10"},
-    {file = "PyPrind-2.11.2.tar.gz", hash = "sha256:c46cab453b805852853dfe29fd933aa88a2a516153909c695b098e9161a9e675"},
-]
 pyreadline = [
     {file = "pyreadline-2.1.win-amd64.exe", hash = "sha256:9ce5fa65b8992dfa373bddc5b6e0864ead8f291c94fbfec05fbd5c836162e67b"},
     {file = "pyreadline-2.1.win32.exe", hash = "sha256:65540c21bfe14405a3a77e4c085ecfce88724743a4ead47c66b84defcf82c32e"},
@@ -1551,9 +1495,6 @@ regex = [
 requests = [
     {file = "requests-2.23.0-py2.py3-none-any.whl", hash = "sha256:43999036bfa82904b6af1d99e4882b560e5e2c68e5c4b0aa03b655f3d7d73fee"},
     {file = "requests-2.23.0.tar.gz", hash = "sha256:b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6"},
-]
-rlpyt = [
-    {file = "rlpyt-0.1.1-py3-none-any.whl", hash = "sha256:f4531cb1c5cc8480deba43a48850ee2105d0d25c4878ce47d951b40bf489ae26"},
 ]
 scipy = [
     {file = "scipy-1.4.1-cp35-cp35m-macosx_10_6_intel.whl", hash = "sha256:c5cac0c0387272ee0e789e94a570ac51deb01c796b37fb2aad1fb13f85e2f97d"},
