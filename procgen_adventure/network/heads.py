@@ -4,10 +4,38 @@ import torch.nn as nn
 from procgen_adventure.network.utils import BaseNet, layer_init
 
 
+class VanillaPolicy(nn.Module, BaseNet):
+    def __init__(self, action_dim: int, body: nn.Module):
+        super(VanillaPolicy, self).__init__()
+        self.body = body
+        self.fc_head = layer_init(nn.Linear(self.body.feature_dim, action_dim))
+
+    def forward(self, obs):
+        phi = self.body(obs)
+        y = self.fc_head(phi)
+        return {"value": y}
+
+
+class DuelingNet(nn.Module, BaseNet):
+    def __init__(self, action_dim: int, body: nn.Module):
+        super(DuelingNet, self).__init__()
+        self.body = body
+        self.fc_value = layer_init(nn.Linear(self.body.feature_dim, 1))
+        self.fc_advantage = layer_init(nn.Linear(self.body.feature_dim, action_dim))
+
+    def forward(self, obs):
+        phi = self.body(obs)
+        value = self.fc_value(phi)
+        advantage = self.fc_advantage(phi)
+        q = value.expand_as(advantage) + (
+            advantage - advantage.mean(1, keepdim=True).expand_as(advantage)
+        )
+        return {"value": q}
+
+
 class CategoricalActorCriticPolicy(nn.Module, BaseNet):
     def __init__(
         self,
-        CHW_shape: tuple,
         action_dim: int,
         phi_body: nn.Module,
         actor_body: nn.Module,
