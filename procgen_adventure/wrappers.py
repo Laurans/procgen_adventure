@@ -2,7 +2,6 @@ import gym
 import numpy as np
 from gym import ObservationWrapper, RewardWrapper, Wrapper, ActionWrapper
 from gym.spaces import Box
-from rlpyt.envs.gym import GymEnvWrapper
 
 
 def _make(**env_config):
@@ -21,7 +20,7 @@ def make(*args, **env_config):
     """
     env = _make(**env_config)
     env = RestartEnv(env, env_config)
-    return GymEnvWrapper(env)
+    return env
 
 
 class PermuteShapeObservation(ObservationWrapper):
