@@ -3,8 +3,7 @@
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Path": "flake8",
     "python.formatting.blackPath": "black",
-    "python.linting.mypyEnabled": true,
-    "python.linting.mypyPath": "mypy",
+    "python.linting.mypyEnabled": false,
     "editor.formatOnSave": true,
     "python.formatting.provider": "black",
     "files.exclude": {
