@@ -24,7 +24,6 @@ class Model:
         critic_body = body_factory("DummyBody")(phi_body.feature_dim)
 
         self.network = CategoricalActorCriticPolicy(
-            CHW_shape=ob_shape,
             action_dim=ac_space,
             phi_body=phi_body,
             actor_body=actor_body,

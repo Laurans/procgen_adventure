@@ -15,9 +15,7 @@ from procgen_adventure.utils.torch_utils import (
     to_np,
 )
 
-
-class Algo:
-    pass
+from procgen_adventure.utils.algo_utils import get_values_from_list_dict, Algo
 
 
 class PPO(Algo):
@@ -128,11 +126,6 @@ class PPO(Algo):
         self.logger.save_itr_params(update, self.get_itr_snapshot(update), force=True)
 
         self.env.close()
-
-
-def get_values_from_list_dict(epinfobuf, key):
-    list_values = [epinfo[key] for epinfo in epinfobuf if key in epinfo]
-    return list_values
 
 
 def process_ep_buf(epinfobuf, device, key):
