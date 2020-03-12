@@ -54,3 +54,7 @@ def sync_values(tensor_sum_values, tensor_nb_values):
     dist.reduce(tensor_sum_values, dst=0)
     dist.reduce(tensor_nb_values, dst=0)
     return tensor_sum_values / tensor_nb_values
+
+
+def range_tensor(t, device):
+    return torch.arange(t).long().to(device)

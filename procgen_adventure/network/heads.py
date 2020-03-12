@@ -16,9 +16,9 @@ class VanillaPolicy(nn.Module, BaseNet):
         return {"value": y}
 
 
-class DuelingNet(nn.Module, BaseNet):
+class DuelingNetPolicy(nn.Module, BaseNet):
     def __init__(self, action_dim: int, body: nn.Module):
-        super(DuelingNet, self).__init__()
+        super(DuelingNetPolicy, self).__init__()
         self.body = body
         self.fc_value = layer_init(nn.Linear(self.body.feature_dim, 1))
         self.fc_advantage = layer_init(nn.Linear(self.body.feature_dim, action_dim))
