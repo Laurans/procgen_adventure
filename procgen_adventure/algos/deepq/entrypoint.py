@@ -4,7 +4,7 @@ from collections import defaultdict, deque
 from typing import Dict, List
 
 import numpy as np
-from procgen_adventure.deepq.model import Model
+from procgen_adventure.algos.deepq.model import Model
 from procgen_adventure.utils.logger import MyLogger
 from procgen_adventure.utils.torch_utils import (
     sync_initial_weights,
@@ -12,7 +12,34 @@ from procgen_adventure.utils.torch_utils import (
     tensor,
     to_np,
 )
-from procgen_adventure.utils.algo_utils import Algo, get_values_from_list_dict
+from procgen_adventure.algos.utils import get_values_from_list_dict
+from procgen_adventure.algos.base import Algo
+
+
+def get_model(env, config):
+    model = Model(
+        ob_shape=env.observation_space.shape,
+        ac_space=env.action_space.n,
+        policy_network_archi=config.ARCHITECTURE,
+        dueling=config.IS_DUELING_NETWORK,
+        batch_size=config.BATCH_SIZE,
+        max_grad_norm=config.MAX_GRAD_NORM,
+        sgd_update_frequency=config.SGD_UPDATE_FREQ,
+        target_network_update_freq=config.TARGET_UPDATE_FREQ,
+        double_q=config.IS_DOUBLE_Q,
+        discount=config.DISCOUNT,
+        device=config.DEVICE,
+    )
+
+    return model
+
+
+def get_example_outputs(env):
+    env.reset()
+    a = env.action_space.sample()
+    o, r, d, env_info = env.step(a)
+    examples = dict(observation=o, reward=np.array([r]), done=np.array([d]), action=a)
+    return examples
 
 
 class DeepQ(Algo):
@@ -22,27 +49,16 @@ class DeepQ(Algo):
         self.env = env
         self.logger: MyLogger = logger
         self.device = f"{self.config.DEVICE}:{rank}"
-        self.model: Model = self.get_model()
+        self.model: Model = get_model(env, config)
         sync_initial_weights(self.model.network)
         self.logger.set_snapshot_mode("gap")
         self.logger.set_snapshot_gap(self.config.SAVE_INTERVAL)
 
-    def get_model(self):
-        model = Model(
-            ob_shape=self.env.observation_space.shape,
-            ac_space=self.env.action_space.n,
-            policy_network_archi=self.config.ARCHITECTURE,
-            dueling=self.config.IS_DUELING_NETWORK,
-            batch_size=self.config.BATCH_SIZE,
-            max_grad_norm=self.config.MAX_GRAD_NORM,
-            sgd_update_frequency=self.config.SGD_UPDATE_FREQ,
-            target_network_update_freq=self.config.TARGET_UPDATE_FREQ,
-            double_q=self.config.IS_DOUBLE_Q,
-            discount=self.config.DISCOUNT,
-            device=self.DEVICE,
-        )
+        breakpoint()
 
-        return model
+    def initialize_replay_buffer(self, batch_spec, async_=False):
+
+        pass
 
     def get_itr_snapshot(self, update):
         return (
