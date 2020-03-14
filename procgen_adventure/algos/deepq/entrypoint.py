@@ -3,8 +3,9 @@ import time
 from collections import defaultdict, deque
 from typing import Dict, List
 
-import numpy as np
+from procgen_adventure.algos.base import Algo
 from procgen_adventure.algos.deepq.model import Model
+from procgen_adventure.algos.utils import get_values_from_list_dict
 from procgen_adventure.utils.logger import MyLogger
 from procgen_adventure.utils.torch_utils import (
     sync_initial_weights,
@@ -12,11 +13,19 @@ from procgen_adventure.utils.torch_utils import (
     tensor,
     to_np,
 )
-from procgen_adventure.algos.utils import get_values_from_list_dict
-from procgen_adventure.algos.base import Algo
+from procgen_adventure.algos.deepq.sampler import Sampler
+from .config import DeepQExpConfig
+from .utils import get_example_outputs
+
+from procgen_adventure.replays.non_sequence.frame import (
+    UniformReplayFrameBuffer,
+    PrioritizedReplayFrameBuffer,
+    AsyncUniformReplayFrameBuffer,
+    AsyncPrioritizedReplayFrameBuffer,
+)
 
 
-def get_model(env, config):
+def get_model(env, config, device):
     model = Model(
         ob_shape=env.observation_space.shape,
         ac_space=env.action_space.n,
@@ -28,37 +37,54 @@ def get_model(env, config):
         target_network_update_freq=config.TARGET_UPDATE_FREQ,
         double_q=config.IS_DOUBLE_Q,
         discount=config.DISCOUNT,
-        device=config.DEVICE,
+        device=device,
     )
 
     return model
 
 
-def get_example_outputs(env):
-    env.reset()
-    a = env.action_space.sample()
-    o, r, d, env_info = env.step(a)
-    examples = dict(observation=o, reward=np.array([r]), done=np.array([d]), action=a)
-    return examples
-
-
 class DeepQ(Algo):
-    def __init__(self, rank, env, config, logger: MyLogger):
+    def __init__(self, rank, env, config: DeepQExpConfig, logger: MyLogger):
         self.rank = rank
-        self.config = config
+        self.config: DeepQExpConfig = config
         self.env = env
         self.logger: MyLogger = logger
         self.device = f"{self.config.DEVICE}:{rank}"
-        self.model: Model = get_model(env, config)
+        self.model: Model = get_model(env, config, self.device)
         sync_initial_weights(self.model.network)
         self.logger.set_snapshot_mode("gap")
         self.logger.set_snapshot_gap(self.config.SAVE_INTERVAL)
+        self.initialize_replay_buffer()
 
-        breakpoint()
+    def initialize_replay_buffer(self, async_=False):
+        example_to_buffer = get_example_outputs(self.env)
 
-    def initialize_replay_buffer(self, batch_spec, async_=False):
+        replay_kwargs = dict(
+            example=example_to_buffer,
+            size=self.config.REPLAY_SIZE,
+            B=self.config.NUM_ENVS,
+            discount=self.config.DISCOUNT,
+            n_step_return=self.config.N_STEP_RETURN,
+        )
 
-        pass
+        if self.config.PRIORITIZED_REPLAY:
+            replay_kwargs.update(
+                dict(alpha=self.config.PRI_ALPHA, beta=self.config.PRI_BETA_INIT)
+            )
+            ReplayCls = (
+                AsyncPrioritizedReplayFrameBuffer
+                if async_
+                else PrioritizedReplayFrameBuffer
+            )
+        else:
+            ReplayCls = (
+                AsyncUniformReplayFrameBuffer if async_ else UniformReplayFrameBuffer
+            )
+
+        self.replay_buffer = ReplayCls(**replay_kwargs)
+
+    # def optim_initialize(self):
+    #    self.pri_beta_itr = max(1, self.config.PRI_BETA_STEPS // self.env.num_envs)
 
     def get_itr_snapshot(self, update):
         return (
@@ -98,10 +124,20 @@ class DeepQ(Algo):
             self.logger.dump_tabular()
 
     def learn(self):
-        sampler = None
+        sampler = Sampler(
+            self.env,
+            self.model,
+            self.replay_buffer,
+            self.device,
+            self.config.EXPLORATION_STEPS,
+            self.config.RANDOM_ACTION_PROB_FN,
+            self.config.BATCH_SIZE,
+        )
 
-        run_exploration_steps(sampler, self.model)
+        sampler.run_exploration_steps()
+        sampler.run()
 
+        """
         self.epinfobuf10 = deque(maxlen=10)
         self.epinfobuf100 = deque(maxlen=100)
 
@@ -136,17 +172,12 @@ class DeepQ(Algo):
         self.logger.save_itr_params(update, self.get_itr_snapshot(update), force=True)
 
         self.env.close()
-
-
-def run_exploration_steps(sampler, model: Model, Config):
-    pass
+        """
 
 
 def run_update(update: int, nupdates: int, sampler, model: Model, Config):
-    frac = 1.0 - (update - 1.0) / nupdates
-
     # Calculate the learning rate
-    lrnow = Config.LR_FN(frac)
+    lrnow = Config.LR_FN(update)
 
     # Get minibatch
     data_sampled, epinfos = sampler.run()
