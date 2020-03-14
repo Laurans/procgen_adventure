@@ -1,16 +1,16 @@
+import collections
+import copy
+
 import torch
 
 from procgen_adventure.network.bodies import body_factory
-from procgen_adventure.network.heads import VanillaPolicy, DuelingNetPolicy, BaseNet
+from procgen_adventure.network.heads import BaseNet, DuelingNetPolicy, VanillaPolicy
 from procgen_adventure.utils.torch_utils import (
-    to_np,
+    range_tensor,
     sync_gradients,
     tensor,
-    range_tensor,
+    to_np,
 )
-import collections
-
-import copy
 
 
 class Model:
@@ -41,7 +41,7 @@ class Model:
         self.device = device
 
         self.optimizer = torch.optim.RMSprop(
-            self.network.parameters(), lr=0.00025, alpha=0.95, ep=0.01, centered=True
+            self.network.parameters(), lr=0.00025, alpha=0.95, eps=0.01, centered=True
         )
         self.max_grad_norm = max_grad_norm
         self.sgd_update_frequency = sgd_update_frequency
