@@ -5,8 +5,8 @@ from typing import Dict, List
 
 import numpy as np
 
-from procgen_adventure.ppo.model import Model
-from procgen_adventure.ppo.sampler import Sampler
+from procgen_adventure.algos.ppo.model import Model
+from procgen_adventure.algos.ppo.sampler import Sampler
 from procgen_adventure.utils.logger import MyLogger
 from procgen_adventure.utils.torch_utils import (
     sync_initial_weights,
@@ -15,7 +15,8 @@ from procgen_adventure.utils.torch_utils import (
     to_np,
 )
 
-from procgen_adventure.utils.algo_utils import get_values_from_list_dict, Algo
+from procgen_adventure.algos.utils import get_values_from_list_dict
+from procgen_adventure.algos.base import Algo
 
 
 class PPO(Algo):
