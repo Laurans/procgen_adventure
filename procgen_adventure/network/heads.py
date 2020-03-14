@@ -1,3 +1,7 @@
+#######################################################################
+# Taken on ShangtongZhang/DeepRL repository and modified
+#######################################################################
+
 import torch
 import torch.nn as nn
 
