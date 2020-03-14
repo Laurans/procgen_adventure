@@ -10,7 +10,7 @@ class ConstantSchedule:
 
 
 class LinearSchedule:
-    def __init__(self, val, start, end=None, steps=None):
+    def __init__(self, start, end=None, steps=None):
         if end is None:
             end = start
             steps = 1
