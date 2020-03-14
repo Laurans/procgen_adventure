@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 
 from procgen_adventure.utils.torch_utils import zeros
 
