@@ -2,9 +2,9 @@
 # Taken on astooke/rlpyt repository
 #######################################################################
 import sys
-from collections import namedtuple, OrderedDict
-from inspect import Signature as Sig, Parameter as Param
-
+from collections import OrderedDict, namedtuple
+from inspect import Parameter as Param
+from inspect import Signature as Sig
 
 RESERVED_NAMES = ("get", "items")
 

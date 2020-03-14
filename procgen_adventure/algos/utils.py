@@ -1,5 +1,6 @@
-from procgen_adventure.utils.torch_utils import zeros
 import numpy as np
+
+from procgen_adventure.utils.torch_utils import zeros
 
 
 def get_values_from_list_dict(epinfobuf, key):

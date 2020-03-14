@@ -1,16 +1,17 @@
 #######################################################################
 # Taken on astooke/rlpyt repository
 #######################################################################
-import numpy as np
-import multiprocessing as mp
 import ctypes
+import multiprocessing as mp
+
+import numpy as np
 import torch
 
 from .collections import (
     NamedArrayTuple,
-    namedarraytuple_like,
     NamedArrayTupleSchema_like,
     NamedTuple,
+    namedarraytuple_like,
 )
 
 

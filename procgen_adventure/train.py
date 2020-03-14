@@ -1,13 +1,13 @@
 import os
 import random
+from importlib import import_module
 
 import torch.distributed as dist
-from procgen_adventure.utils.cmd_util import common_arg_parser
 
-from procgen_adventure.utils.wrappers import make
-from procgen_adventure.utils.context import logger_context
-from importlib import import_module
 from procgen_adventure.algos.deepq.entrypoint import DeepQ
+from procgen_adventure.utils.cmd_util import common_arg_parser
+from procgen_adventure.utils.context import logger_context
+from procgen_adventure.utils.wrappers import make
 
 
 def multi_setup(alg, rank, world_size, Config):

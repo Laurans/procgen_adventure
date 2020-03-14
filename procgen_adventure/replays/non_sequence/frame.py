@@ -1,10 +1,10 @@
 import numpy as np
 
-from procgen_adventure.replays.non_sequence.n_step import NStepReturnBuffer
-from procgen_adventure.replays.frame import FrameBufferMixin
-from procgen_adventure.replays.non_sequence.uniform import UniformReplay
-from procgen_adventure.replays.non_sequence.prioritized import PrioritizedReplay
 from procgen_adventure.replays.async_ import AsyncReplayBufferMixin
+from procgen_adventure.replays.frame import FrameBufferMixin
+from procgen_adventure.replays.non_sequence.n_step import NStepReturnBuffer
+from procgen_adventure.replays.non_sequence.prioritized import PrioritizedReplay
+from procgen_adventure.replays.non_sequence.uniform import UniformReplay
 
 
 class NStepFrameBuffer(FrameBufferMixin, NStepReturnBuffer):

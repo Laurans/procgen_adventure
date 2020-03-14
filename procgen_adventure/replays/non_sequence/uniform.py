@@ -1,7 +1,7 @@
 import numpy as np
 
-from procgen_adventure.replays.non_sequence.n_step import NStepReturnBuffer
 from procgen_adventure.replays.async_ import AsyncReplayBufferMixin
+from procgen_adventure.replays.non_sequence.n_step import NStepReturnBuffer
 
 
 class UniformReplay:

@@ -1,13 +1,13 @@
+from procgen_adventure.replays.async_ import AsyncReplayBufferMixin
 from procgen_adventure.replays.non_sequence.n_step import (
     NStepReturnBuffer,
     SamplesFromReplay,
 )
-from procgen_adventure.replays.async_ import AsyncReplayBufferMixin
-from procgen_adventure.replays.sum_tree import SumTree, AsyncSumTree
-from procgen_adventure.utils.collections import namedarraytuple
+from procgen_adventure.replays.sum_tree import AsyncSumTree, SumTree
 
 # from procgen_adventure.utils.quick_args import save__init__args
-from procgen_adventure.utils.buffer import torchify_buffer, numpify_buffer
+from procgen_adventure.utils.buffer import numpify_buffer, torchify_buffer
+from procgen_adventure.utils.collections import namedarraytuple
 
 EPS = 1e-6
 

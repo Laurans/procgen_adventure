@@ -1,11 +1,10 @@
 import math
+
 import numpy as np
 
-
+from procgen_adventure.algos.utils import discount_return_n_step
 from procgen_adventure.replays.base import BaseReplayBuffer
 from procgen_adventure.utils.buffer import buffer_from_example, get_leading_dims
-
-from procgen_adventure.algos.utils import discount_return_n_step
 
 
 class BaseNStepReturnBuffer(BaseReplayBuffer):

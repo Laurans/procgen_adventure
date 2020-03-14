@@ -1,5 +1,6 @@
-import numpy as np
 import multiprocessing as mp
+
+import numpy as np
 
 from procgen_adventure.utils.buffer import np_mp_array
 

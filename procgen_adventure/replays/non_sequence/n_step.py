@@ -1,8 +1,8 @@
 import numpy as np
 
 from procgen_adventure.replays.n_step import BaseNStepReturnBuffer
-from procgen_adventure.utils.collections import namedarraytuple
 from procgen_adventure.utils.buffer import torchify_buffer
+from procgen_adventure.utils.collections import namedarraytuple
 
 AgentInputs = namedarraytuple(
     "AgentInputs", ["observation", "prev_action", "prev_reward"]
