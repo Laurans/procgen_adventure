@@ -1,4 +1,4 @@
-from procgen_adventure.utils.scheduler import ConstantSchedule
+from procgen_adventure.utils.scheduler import ConstantSchedule, LinearSchedule
 
 
 class DeepQExpConfig:
@@ -12,13 +12,29 @@ class DeepQExpConfig:
         self.NUM_ENVS = 2  # 32 * (8 // self.WORLD_SIZE)
         self.TOTAL_TIMESTEPS = 256e6
 
+        self.REPLAY_SIZE = int(1e6)
+        self.PRIORITIZED_REPLAY = False
+        self.PRI_ALPHA = 0.6
+        self.PRI_BETA_INIT = 0.4
+        self.PRI_BETA_STEPS = int(50e6)
+        self.N_STEP_RETURN = 2
+        self.BATCH_SIZE = 32
+
         self.LEARNING_RATE = 5e-4  # Learning rate, constant
         self.LR_FN = ConstantSchedule(self.LEARNING_RATE)
+        self.SGD_UPDATE_FREQ = 4
+        self.TARGET_UPDATE_FREQ = 8000
+
+        self.EXPLORATION_STEPS = 50000
+        self.RANDOM_ACTION_PROB_FN = LinearSchedule(1.0, 0.01, 1e6)
         self.MAX_GRAD_NORM = 10  # Gradient norm clipping coefficient
-        self.GAMMA = 0.999  # discounting factor
+        self.DISCOUNT = 0.999  # discounting factor
         self.NUM_OPT_EPOCHS = 1  # number of training epochs per update
 
         self.LOG_INTERVAL = 5  # Number of updates betwen logging events
+
+        self.IS_DUELING_NETWORK = True
+        self.IS_DOUBLE_Q = True
 
         # The convolutional architecture to use
         # One of {'NatureConv', 'impala', 'impalalarge'}
@@ -38,9 +54,6 @@ class DeepQExpConfig:
         # The L2 penalty to use during training
         self.L2_WEIGHT = 1e-4
 
-        # The probability the agent's action is replaced with a random action
-        self.EPSILON_GREEDY = 0.0
-
         # The number of frames to stack for each observation.
         self.FRAME_STACK = 1
 
@@ -55,8 +68,6 @@ class DeepQExpConfig:
             paint_vel_info=True,
             num_envs=self.NUM_ENVS,
         )
-
-        self.BATCH_SIZE = 32
 
         self.TAGS += [self.ARCHITECTURE]
 
