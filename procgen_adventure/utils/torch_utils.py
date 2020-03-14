@@ -58,3 +58,12 @@ def sync_values(tensor_sum_values, tensor_nb_values):
 
 def range_tensor(t, device):
     return torch.arange(t).long().to(device)
+
+
+def zeros(shape, dtype):
+    """Attempt to return torch tensor of zeros, or if numpy dtype provided,
+    return numpy array or zeros."""
+    try:
+        return torch.zeros(shape, dtype=dtype)
+    except TypeError:
+        return np.zeros(shape, dtype=dtype)

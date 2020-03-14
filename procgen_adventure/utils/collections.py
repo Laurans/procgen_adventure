@@ -1,3 +1,6 @@
+#######################################################################
+# Taken on astooke/rlpyt repository
+#######################################################################
 import sys
 from collections import namedtuple, OrderedDict
 from inspect import Signature as Sig, Parameter as Param
