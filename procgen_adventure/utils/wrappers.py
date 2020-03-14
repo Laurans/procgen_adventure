@@ -1,16 +1,34 @@
 import gym
 import numpy as np
-from gym import ActionWrapper, ObservationWrapper
+from gym import ActionWrapper, ObservationWrapper, Wrapper
 from gym.spaces import Box
 from procgen import ProcgenEnv
 
 
-def make(**env_config):
+def _make(**env_config):
     env = ProcgenEnv(**env_config)
     env = EpisodeRewardWrapper(env)
     env = RemoveDictObs(env, key="rgb")
     env = ReshapeAction(env)
     return env
+
+
+def make(**env_config):
+    env = _make(**env_config)
+    env = Restart(env, env_config)
+    return env
+
+
+class Restart(Wrapper):
+    def __init__(self, env, env_config):
+        super().__init__(env=env)
+        nenvs = env.num_envs
+        self.num_envs = nenvs
+        self.env_config = env_config
+
+    def reset(self, **kwargs):
+        self.env = _make(**self.env_config)
+        return super().reset(**kwargs)
 
 
 class RemoveDictObs(ObservationWrapper):
