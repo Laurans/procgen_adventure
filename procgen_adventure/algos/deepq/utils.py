@@ -1,4 +1,5 @@
 import numpy as np
+
 from procgen_adventure.utils.collections import namedarraytuple
 
 SamplesToBuffer = namedarraytuple(
