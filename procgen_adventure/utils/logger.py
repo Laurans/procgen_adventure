@@ -290,7 +290,6 @@ class MyLogger:
                 elif self._snapshot_mode == "last":
                     file_name = os.path.join(self.get_snapshot_dir(), "params.pkl")
                 elif self._snapshot_mode == "gap":
-                    print(itr, itr + 1 % self._snapshot_gap)
                     if itr == 0 or (itr + 1) % self._snapshot_gap == 0:
                         file_name = os.path.join(
                             self.get_snapshot_dir(), f"itr_{int(itr)}.pkl"
