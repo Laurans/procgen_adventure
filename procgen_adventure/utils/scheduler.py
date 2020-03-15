@@ -5,7 +5,7 @@ class ConstantSchedule:
     def __init__(self, val):
         self.val = val
 
-    def __call__(self, steps=1):
+    def __call__(self, steps=0):
         return self.val
 
 
@@ -23,9 +23,8 @@ class LinearSchedule:
         else:
             self.bound = max
 
-    def __call__(self, steps=1):
-        val = self.current
-        self.current = self.bound(self.current + self.inc * steps, self.end)
+    def __call__(self, steps=0):
+        val = self.bound(self.current + self.inc * steps, self.end)
         return val
 
 
@@ -35,8 +34,8 @@ class StepDecaySchedule:
         self.rate = rate
         self.every_n_steps = every_n_steps
 
-    def __call_(self, steps=1):
-        if steps % self.every_n_steps == 0:
+    def __call_(self, steps=0):
+        if steps != 0 and steps % self.every_n_steps == 0:
             val = self.val * self.rate
             self.val = val
 
@@ -48,7 +47,7 @@ class ExponentialDecaySchedule:
         self.val = val
         self.k = decay_constant
 
-    def __call__(self, steps=1):
+    def __call__(self, steps=0):
         return self.val * np.exp(-self.k * steps)
 
 
