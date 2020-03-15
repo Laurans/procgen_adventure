@@ -15,6 +15,7 @@ def tensor(x, device):
 def input_preprocessing(x, device):
     x = np.transpose(x, (0, 3, 1, 2))
     x = tensor(x, device)
+    x = x.float()
     x /= 255.0
     return x
 
