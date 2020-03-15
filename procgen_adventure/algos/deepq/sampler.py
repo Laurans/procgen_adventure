@@ -4,8 +4,9 @@ from typing import Callable
 import numpy as np
 import torch
 
-from procgen_adventure.utils.torch_utils import input_preprocessing, to_np
 from procgen_adventure.replays.non_sequence.n_step import SamplesFromReplay
+from procgen_adventure.utils.torch_utils import input_preprocessing, to_np
+
 from .utils import samples_to_buffer
 
 
@@ -37,18 +38,19 @@ class Sampler:
         self.exploration_steps = exploration_steps // env.num_envs
         self.random_action_prob = random_action_prob
 
-    def interact(self, random_act_only=False):
+    def interact(self, random_act_only=False, random_itr=0):
         storage = defaultdict(list)
         epinfos = []
         self.model.eval()
         with torch.no_grad():
-            if random_act_only or np.random.rand() < self.random_action_prob():
+            if random_act_only or np.random.rand() < self.random_action_prob(
+                random_itr
+            ):
                 actions = np.random.randint(0, self.action_n, size=self.env.num_envs)
             else:
                 obs = input_preprocessing(self.obs, device=self.device)
                 q_values = to_np(self.model.step(obs=obs)["value"])
-                breakpoint()
-                actions = np.argmax(q_values, axis=0)
+                actions = np.argmax(q_values, axis=1)
 
             storage["observation"] += [self.obs.copy()]
             storage["action"] += [actions]
@@ -66,34 +68,39 @@ class Sampler:
             if storage[key].ndim == 2:
                 storage[key] = np.expand_dims(storage[key], -1)
 
-        return storage
+        return storage, epinfos
 
     def run_exploration_steps(self):
         self.init_run()
         for _ in range(self.exploration_steps):
-            samples = self.interact(random_act_only=True)
+            samples, _ = self.interact(random_act_only=True)
             self.replay_buffer.append_samples(samples_to_buffer(samples))
 
     def init_run(self):
         self.obs[:] = self.env.reset()
         self.dones = np.array([False] * self.env.num_envs)
-        self._total_steps = 0
+        self._itr = 0
 
-    def run(self):
+    def interact_and_sample(self):
+        opt_infos = dict(epsilon=list())
         for _ in range(self.sgd_update_freq):
-            samples = self.interact()
+            samples, epinfos = self.interact(random_itr=self._itr)
+            opt_infos["epsilon"] += [self.random_action_prob(self._itr)]
+            self._itr += 1
             self.replay_buffer.append_samples(samples_to_buffer(samples))
 
         samples_from_replay: SamplesFromReplay = self.replay_buffer.sample_batch(
             self.batch_size
         )
         batch = dict(
-            states=input_preprocessing(samples_from_replay.agent_inputs.observation),
+            states=input_preprocessing(
+                samples_from_replay.agent_inputs.observation, device=self.device
+            ),
             actions=samples_from_replay.action,
             rewards=samples_from_replay.return_,
             next_states=input_preprocessing(
-                samples_from_replay.target_inputs.observation
+                samples_from_replay.target_inputs.observation, device=self.device
             ),
             dones=samples_from_replay.done,
         )
-        return batch
+        return batch, epinfos, opt_infos

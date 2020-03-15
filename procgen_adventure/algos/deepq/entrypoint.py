@@ -5,7 +5,14 @@ from typing import Dict, List
 
 from procgen_adventure.algos.base import Algo
 from procgen_adventure.algos.deepq.model import Model
+from procgen_adventure.algos.deepq.sampler import Sampler
 from procgen_adventure.algos.utils import get_values_from_list_dict
+from procgen_adventure.replays.non_sequence.frame import (
+    AsyncPrioritizedReplayFrameBuffer,
+    AsyncUniformReplayFrameBuffer,
+    PrioritizedReplayFrameBuffer,
+    UniformReplayFrameBuffer,
+)
 from procgen_adventure.utils.logger import MyLogger
 from procgen_adventure.utils.torch_utils import (
     sync_initial_weights,
@@ -13,16 +20,9 @@ from procgen_adventure.utils.torch_utils import (
     tensor,
     to_np,
 )
-from procgen_adventure.algos.deepq.sampler import Sampler
+
 from .config import DeepQExpConfig
 from .utils import get_example_outputs
-
-from procgen_adventure.replays.non_sequence.frame import (
-    UniformReplayFrameBuffer,
-    PrioritizedReplayFrameBuffer,
-    AsyncUniformReplayFrameBuffer,
-    AsyncPrioritizedReplayFrameBuffer,
-)
 
 
 def get_model(env, config, device):
@@ -37,6 +37,7 @@ def get_model(env, config, device):
         target_network_update_freq=config.TARGET_UPDATE_FREQ,
         double_q=config.IS_DOUBLE_Q,
         discount=config.DISCOUNT,
+        n_step_return=config.N_STEP_RETURN,
         device=device,
     )
 
@@ -95,7 +96,7 @@ class DeepQ(Algo):
             },
         )
 
-    def _log_diagnostics(self, update, time_elapsed, fps, lossvals):
+    def _log_diagnostics(self, update, time_elapsed, fps, optinfos):
         if update % self.config.LOG_INTERVAL == 0 or update == 1:
             rew_100 = get_values_from_list_dict(self.epinfobuf100, "r")
             rew_10 = get_values_from_list_dict(self.epinfobuf10, "r")
@@ -118,8 +119,8 @@ class DeepQ(Algo):
             self.logger.record_tabular("misc/completion_training", completion_perc)
             self.logger.log(f"Time remaining {time_remaining}")
 
-            for lossname, lossval, in lossvals.items():
-                self.logger.record_tabular_misc_stat(f"loss/{lossname}/", lossval)
+            for optname, optval in optinfos.items():
+                self.logger.record_tabular_misc_stat(f"opt/{optname}/", optval)
 
             self.logger.dump_tabular()
 
@@ -132,12 +133,11 @@ class DeepQ(Algo):
             self.config.EXPLORATION_STEPS,
             self.config.RANDOM_ACTION_PROB_FN,
             self.config.BATCH_SIZE,
+            self.config.SGD_UPDATE_FREQ,
         )
 
         sampler.run_exploration_steps()
-        sampler.run()
 
-        """
         self.epinfobuf10 = deque(maxlen=10)
         self.epinfobuf100 = deque(maxlen=100)
 
@@ -146,15 +146,15 @@ class DeepQ(Algo):
         nupdates = int(self.config.TOTAL_TIMESTEPS // self.config.NBATCH)
 
         for update in range(1, nupdates + 1):
-            if self.rank == 0:
+            if self.rank == 0 and (
+                update % self.config.LOG_INTERVAL == 0 or update == 1
+            ):
                 self.logger.log(f"{update}/{nupdates+1}")
 
             # Start timer
             tstart = time.perf_counter()
 
-            lossvals, epinfos = run_update(
-                update, nupdates, sampler, self.model, self.config
-            )
+            epinfos, optinfos = self.run_update(update - 1, sampler)
 
             self.epinfobuf10.extend(epinfos)
             self.epinfobuf100.extend(epinfos)
@@ -166,28 +166,26 @@ class DeepQ(Algo):
             # Calculate the fps
             fps = int(self.config.NBATCH / (tnow - tstart))
 
-            self._log_diagnostics(update, time_elapsed, fps, lossvals)
+            self._log_diagnostics(update, time_elapsed, fps, optinfos)
             self.logger.save_itr_params(update, self.get_itr_snapshot(update))
 
         self.logger.save_itr_params(update, self.get_itr_snapshot(update), force=True)
 
         self.env.close()
-        """
 
+    def run_update(self, update: int, sampler: Sampler):
+        # Calculate the learning rate
+        lrnow = self.config.LR_FN(update)
 
-def run_update(update: int, nupdates: int, sampler, model: Model, Config):
-    # Calculate the learning rate
-    lrnow = Config.LR_FN(update)
+        # Get minibatch
+        data_sampled, epinfos, optinfos = sampler.interact_and_sample()
 
-    # Get minibatch
-    data_sampled, epinfos = sampler.run()
+        # For each minibatch we'll calculate the loss and append it
+        mblossvals: Dict[str, List] = defaultdict(list)
+        for _ in range(self.config.NUM_OPT_EPOCHS):
+            losses = self.model.train(lrnow, data_sampled)
+            for key, val in losses.items():
+                mblossvals[key].append(val)
 
-    # For each minibatch we'll calculate the loss and append it
-    mblossvals: Dict[str, List] = defaultdict(list)
-    for _ in range(Config.NUM_OPT_EPOCHS):
-        slices = {key: data_sampled[key][mbinds] for key in data_sampled}
-        losses = model.train(lrnow, slices)
-        for key, val in losses.items():
-            mblossvals[key].append(val)
-
-    return mblossvals, epinfos
+        optinfos.update(mblossvals)
+        return epinfos, optinfos

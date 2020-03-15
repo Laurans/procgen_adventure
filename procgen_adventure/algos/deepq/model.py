@@ -1,6 +1,7 @@
 import collections
 import copy
 
+import numpy as np
 import torch
 
 from procgen_adventure.network.bodies import body_factory
@@ -26,6 +27,7 @@ class Model:
         target_network_update_freq: int,
         double_q: bool,
         discount: float,
+        n_step_return: int,
         device: str,
     ):
         phi_body = body_factory(policy_network_archi)(CHW_shape=ob_shape[::-1])
@@ -48,9 +50,10 @@ class Model:
         self.target_network_update_freq = target_network_update_freq
         self.double_q = double_q
         self.discount = discount
+        self.n_step_return = n_step_return
 
         self.batch_indices = range_tensor(batch_size, device)
-        self.total_steps = 0
+        self.update_counter = 0
 
         self.step = self.network.forward
 
@@ -58,20 +61,31 @@ class Model:
         self.network.eval()
 
     def compute_loss(self, obs, actions, rewards, next_obs, terminals):
-        q_next = self.network(obs).detach()
-        if self.double_q:
-            best_actions = torch.argmax(self.network(next_obs), dim=-1)
-            q_next = q_next[self.batch_indices, best_actions]
-        else:
-            q_next = q_next.max(1)[0]
-
-        q_next = self.discount * q_next * (1 - terminals)
-        q_next.add_(rewards)
-        q = self.network(obs)
+        q = self.network(obs)["value"]
         q = q[self.batch_indices, actions]
-        loss = (q_next - q).pow(2).mul(0.5).mean()
 
-        return loss, collections.OrderedDict(loss=to_np(loss))
+        with torch.no_grad():
+            q_next = self.target_network(next_obs)["value"]
+            if self.double_q:
+                best_actions = torch.argmax(self.network(next_obs)["value"], dim=-1)
+                q_next = q_next[self.batch_indices, best_actions]
+            else:
+                q_next = q_next.max(1)[0]
+
+        q_next = (
+            rewards
+            + terminals.logical_not() * (self.discount ** self.n_step_return) * q_next
+        )
+        delta = q_next - q
+        losses_ = delta.pow(2).mul(0.5)
+        abs_delta = abs(delta)
+        tb_abs_errors = abs_delta.detach()
+        losses = losses_.mean()
+
+        return (
+            losses,
+            collections.OrderedDict(loss=to_np(losses_), tbAbsErr=to_np(tb_abs_errors)),
+        )
 
     def train(self, lr: float, batch: dict):
         self.network.train()
@@ -91,15 +105,15 @@ class Model:
 
         loss.backward()
         sync_gradients(self.network)
-        torch.nn.utils.clip_grad_norm_(self.network.parameters(), self.max_grad_norm)
+        grad_norm = torch.nn.utils.clip_grad_norm_(
+            self.network.parameters(), self.max_grad_norm
+        )
         self.optimizer.step()
 
-        if (
-            self.total_steps
-            / self.sgd_update_frequency
-            % self.target_network_update_freq
-            == 0
-        ):
+        self.update_counter += 1
+
+        if self.update_counter % self.target_network_update_freq == 0:
             self.target_network.load_state_dict(self.network.state_dict())
 
+        opt_dict["gradNorm"] = np.array([grad_norm])
         return opt_dict
