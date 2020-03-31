@@ -28,6 +28,7 @@ class Model:
         double_q: bool,
         discount: float,
         n_step_return: int,
+        use_prioritized_replay: bool,
         device: str,
     ):
         phi_body = body_factory(policy_network_archi)(CHW_shape=ob_shape[::-1])
@@ -51,6 +52,7 @@ class Model:
         self.double_q = double_q
         self.discount = discount
         self.n_step_return = n_step_return
+        self.use_prioritized_replay = use_prioritized_replay
 
         self.batch_indices = range_tensor(batch_size, device)
         self.update_counter = 0
@@ -60,7 +62,7 @@ class Model:
     def eval(self):
         self.network.eval()
 
-    def compute_loss(self, obs, actions, rewards, next_obs, terminals):
+    def compute_loss(self, obs, actions, rewards, next_obs, terminals, weights):
         q = self.network(obs)["value"]
         q = q[self.batch_indices, actions]
 
@@ -77,15 +79,38 @@ class Model:
             + terminals.logical_not() * (self.discount ** self.n_step_return) * q_next
         )
         delta = q_next - q
-        losses_ = delta.pow(2).mul(0.5)
-        abs_delta = abs(delta)
-        tb_abs_errors = abs_delta.detach()
-        losses = losses_.mean()
+        losses = delta.pow(2).mul(0.5)
+
+        if self.use_prioritized_replay:
+            losses *= weights
+
+        loss = losses.mean()
+        tb_abs_errors = abs(delta).detach()
 
         return (
-            losses,
-            collections.OrderedDict(loss=to_np(losses_), tbAbsErr=to_np(tb_abs_errors)),
+            loss,
+            collections.OrderedDict(loss=to_np(losses), tbAbsErr=to_np(tb_abs_errors)),
         )
+
+    def _preprocess_batch(self, batch):
+        obs = tensor(batch["states"], self.device)
+        actions = tensor(batch["actions"], self.device).long()
+        if len(actions.shape) == 2:
+            actions = actions.squeeze(-1)
+        rewards = tensor(batch["rewards"], self.device)
+        if len(rewards.shape) == 2:
+            rewards = rewards.squeeze(-1)
+        next_obs = tensor(batch["next_states"], self.device)
+        terminals = tensor(batch["dones"], self.device)
+        if len(terminals.shape) == 2:
+            terminals = terminals.squeeze(-1)
+        weights = (
+            tensor(batch["weights"], self.device)
+            if batch["weights"] is not None
+            else None
+        )
+
+        return obs, actions, rewards, next_obs, terminals, weights
 
     def train(self, lr: float, batch: dict):
         self.network.train()
@@ -93,15 +118,11 @@ class Model:
         for param_group in self.optimizer.param_groups:
             param_group["lr"] = lr
 
-        obs = tensor(batch["states"], self.device)
-        actions = tensor(batch["actions"], self.device).long()
-        rewards = tensor(batch["rewards"], self.device)
-        next_obs = tensor(batch["next_states"], self.device)
-        terminals = tensor(batch["dones"], self.device)
+        preprocessed_batch = self._preprocess_batch(batch)
 
         self.optimizer.zero_grad()
 
-        loss, opt_dict = self.compute_loss(obs, actions, rewards, next_obs, terminals)
+        loss, opt_dict = self.compute_loss(*preprocessed_batch)
 
         loss.backward()
         sync_gradients(self.network)

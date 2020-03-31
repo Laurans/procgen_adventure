@@ -38,6 +38,7 @@ def get_model(env, config, device):
         double_q=config.IS_DOUBLE_Q,
         discount=config.DISCOUNT,
         n_step_return=config.N_STEP_RETURN,
+        use_prioritized_replay=config.PRIORITIZED_REPLAY,
         device=device,
     )
 
@@ -56,6 +57,7 @@ class DeepQ(Algo):
         self.logger.set_snapshot_mode("gap")
         self.logger.set_snapshot_gap(self.config.SAVE_INTERVAL)
         self.initialize_replay_buffer()
+        self.optim_initialize()
 
     def initialize_replay_buffer(self, async_=False):
         example_to_buffer = get_example_outputs(self.env)
@@ -84,8 +86,9 @@ class DeepQ(Algo):
 
         self.replay_buffer = ReplayCls(**replay_kwargs)
 
-    # def optim_initialize(self):
-    #    self.pri_beta_itr = max(1, self.config.PRI_BETA_STEPS // self.env.num_envs)
+    def optim_initialize(self):
+        if self.config.PRIORITIZED_REPLAY:
+            self.pri_beta_itr = max(1, self.config.PRI_BETA_STEPS // self.env.num_envs)
 
     def get_itr_snapshot(self, update):
         return (
@@ -181,11 +184,27 @@ class DeepQ(Algo):
         data_sampled, epinfos, optinfos = sampler.interact_and_sample()
 
         # For each minibatch we'll calculate the loss and append it
-        mblossvals: Dict[str, List] = defaultdict(list)
+        lossvals: Dict[str, List] = defaultdict(list)
         for _ in range(self.config.NUM_OPT_EPOCHS):
-            losses = self.model.train(lrnow, data_sampled)
-            for key, val in losses.items():
-                mblossvals[key].append(val)
+            optinfos_model = self.model.train(lrnow, data_sampled)
 
-        optinfos.update(mblossvals)
+            if self.config.PRIORITIZED_REPLAY:
+                self.replay_buffer.update_batch_priorities(optinfos_model["tbAbsErr"])
+
+                self.update_itr_hyperparams(update)
+
+            for key, val in optinfos_model.items():
+                lossvals[key].append(val)
+
+        optinfos.update(lossvals)
         return epinfos, optinfos
+
+    def update_itr_hyperparams(self, itr):
+        if self.config.PRIORITIZED_REPLAY and itr < self.pri_beta_itr:
+            prog = min(1, max(0, itr / self.pri_beta_itr))
+
+            new_beta = (
+                prog * self.config.PRI_BETA_FINAL
+                + (1 - prog) * self.config.PRI_BETA_INIT
+            )
+            self.replay_buffer.set_beta(new_beta)

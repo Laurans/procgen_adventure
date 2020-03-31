@@ -9,27 +9,28 @@ class DeepQExpConfig:
         self.WORLD_SIZE = 1
         self.DEVICE = "cuda"
 
-        self.NUM_ENVS = 8  # 32 * (8 // self.WORLD_SIZE)
+        self.NUM_ENVS = 16  # 32 * (8 // self.WORLD_SIZE)
         self.TOTAL_TIMESTEPS = 256e6
 
-        self.REPLAY_SIZE = int(1e5)
-        self.PRIORITIZED_REPLAY = False
+        self.REPLAY_SIZE = int(1e6)
+        self.PRIORITIZED_REPLAY = True
         self.PRI_ALPHA = 0.6
         self.PRI_BETA_INIT = 0.4
         self.PRI_BETA_STEPS = int(50e6)
+        self.PRI_BETA_FINAL = 1
 
         self.N_STEP_RETURN = 3
         self.BATCH_SIZE = 32
 
-        self.LEARNING_RATE = 0.0000625  # Learning rate, constant 0.00025 / 4
+        self.LEARNING_RATE = 0.00025  # Learning rate, constant 0.00025 / 4
         self.LR_FN = ConstantSchedule(self.LEARNING_RATE)
         self.SGD_UPDATE_FREQ = 4
         self.NBATCH = self.NUM_ENVS * self.SGD_UPDATE_FREQ
-        self.TARGET_UPDATE_FREQ = 8000
+        self.TARGET_UPDATE_FREQ = 10000
 
-        self.EXPLORATION_STEPS = 20000
+        self.EXPLORATION_STEPS = 50000
         self.RANDOM_ACTION_PROB_FN = LinearSchedule(1.0, 0.01, 1e6)
-        self.MAX_GRAD_NORM = 10  # Gradient norm clipping coefficient
+        self.MAX_GRAD_NORM = 5  # Gradient norm clipping coefficient
         self.DISCOUNT = 0.99  # discounting factor
         self.NUM_OPT_EPOCHS = 1  # number of training epochs per update
 
@@ -60,7 +61,7 @@ class DeepQExpConfig:
         self.FRAME_STACK = 1
 
         # Overwrite the latest save file after this many updates
-        self.SAVE_INTERVAL = 300
+        self.SAVE_INTERVAL = 300000
 
         self.ENV_CONFIG = dict(
             env_name="coinrun",

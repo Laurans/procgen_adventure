@@ -82,10 +82,10 @@ class Sampler:
         self._itr = 0
 
     def interact_and_sample(self):
-        opt_infos = dict(epsilon=list())
+        optinfos = dict(epsilon=list())
         for _ in range(self.sgd_update_freq):
             samples, epinfos = self.interact(random_itr=self._itr)
-            opt_infos["epsilon"] += [self.random_action_prob(self._itr)]
+            optinfos["epsilon"] += [self.random_action_prob(self._itr)]
             self._itr += 1
             self.replay_buffer.append_samples(samples_to_buffer(samples))
 
@@ -102,5 +102,8 @@ class Sampler:
                 samples_from_replay.target_inputs.observation, device=self.device
             ),
             dones=samples_from_replay.done,
+            weights=samples_from_replay.is_weights
+            if "is_weights" in samples_from_replay
+            else None,
         )
-        return batch, epinfos, opt_infos
+        return batch, epinfos, optinfos
