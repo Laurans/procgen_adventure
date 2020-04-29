@@ -40,10 +40,10 @@ class Sampler:
                 storage["actions"] += [to_np(prediction["action"])]
                 storage["values"] += [to_np(prediction["value"])]
                 storage["neg_log_prob_a"] += [to_np(prediction["neg_log_prob_a"])]
-                storage["dones"] += [self.dones]
 
                 self.obs[:], rewards, self.dones, infos = self.env.step(actions)
                 storage["rewards"] += [rewards]
+                storage["dones"] += [self.dones]
                 for info in infos:
                     if "episode" in info:
                         epinfos.append(info["episode"])
