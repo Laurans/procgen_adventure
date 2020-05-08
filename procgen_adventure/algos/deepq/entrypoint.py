@@ -14,12 +14,7 @@ from procgen_adventure.replays.non_sequence.frame import (
     UniformReplayFrameBuffer,
 )
 from procgen_adventure.utils.logger import MyLogger
-from procgen_adventure.utils.torch_utils import (
-    sync_initial_weights,
-    sync_values,
-    tensor,
-    to_np,
-)
+from procgen_adventure.utils.torch_utils import sync_initial_weights
 
 from .config import DeepQExpConfig
 from .utils import get_example_outputs
