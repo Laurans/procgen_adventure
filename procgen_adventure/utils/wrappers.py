@@ -10,6 +10,7 @@ def _make(**env_config):
     env = EpisodeRewardWrapper(env)
     env = RemoveDictObs(env, key="rgb")
     env = ReshapeAction(env)
+    env = PermuteShapeObservation(env)
     return env
 
 
@@ -53,7 +54,7 @@ class PermuteShapeObservation(ObservationWrapper):
         )
 
     def observation(self, observation):
-        return np.transpose(observation, (2, 0, 1))
+        return np.transpose(observation, (0, 3, 1, 2))
 
 
 class ReshapeAction(ActionWrapper):

@@ -31,7 +31,7 @@ class Model:
         use_prioritized_replay: bool,
         device: str,
     ):
-        phi_body = body_factory(policy_network_archi)(CHW_shape=ob_shape[::-1])
+        phi_body = body_factory(policy_network_archi)(CHW_shape=ob_shape)
 
         if dueling:
             self.network: BaseNet = DuelingNetPolicy(action_dim=ac_space, body=phi_body)
