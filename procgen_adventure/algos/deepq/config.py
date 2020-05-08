@@ -13,7 +13,7 @@ class DeepQExpConfig:
         self.TOTAL_TIMESTEPS = 256e6
 
         self.REPLAY_SIZE = int(1e6)
-        self.PRIORITIZED_REPLAY = True
+        self.PRIORITIZED_REPLAY = False
         self.PRI_ALPHA = 0.6
         self.PRI_BETA_INIT = 0.4
         self.PRI_BETA_STEPS = int(50e6)
@@ -42,9 +42,6 @@ class DeepQExpConfig:
         # The convolutional architecture to use
         # One of {'NatureConv', 'impala', 'impalalarge'}
         self.ARCHITECTURE = "NatureConv"
-
-        # Should the model include an LSTM
-        self.USE_LSTM = False
 
         # Should batch normalization be used after each convolutional layer
         # NOTE: Only applies to IMPALA and IMPALA-Large architectures
